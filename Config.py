@@ -58,6 +58,8 @@ TEMP_PIC_PATH = PIC_PATH+'pictemp/'
 #一行有多少个小图块
 K_PICS = 4
 
+TSNE_PATH = WORK_PATH+'tsne/3d-vecs/'
+
 #以excel的方式呈现
 RESULT_PATH = FILE_PATH+"results/"
 
