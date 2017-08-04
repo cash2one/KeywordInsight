@@ -3,7 +3,7 @@
 import os
 import pandas as pd
 import Config
-
+from kmeanAnddraw.keyword import RULE_MAP
 
 def merge():
     print('merge file')
@@ -24,4 +24,28 @@ def merge():
         df = pd.merge(df,dict1,how='left',on=['关键词'])
         df = pd.merge(df,dict2,how='left',on=['关键词'])
         df = pd.merge(df, dict3, how='left', on=['关键词'])
-        df.to_excel(Config.MERGE_PATH+filename,encoding='utf-8')
+        df = add_user_defined_category(df)
+        writer = pd.ExcelWriter(Config.MERGE_PATH+filename)
+        df.to_excel(writer, encoding='utf-8', index=False, sheet_name='sheet1')
+        writer.save()
+
+
+#把自定义的类别加入到excel中去
+def add_user_defined_category(df):
+    now_rule = None
+    def rule(str1):
+        for w in now_rule:
+            if w in str(str1):
+                return True
+        return False
+
+    for attr, ls_rule in RULE_MAP.items():
+        for y in ls_rule:
+            now_rule = y
+            rule_name = '-'.join(now_rule)
+            df[rule_name] = df[attr].apply(rule) | df['关键词'].apply(rule)
+
+    return df
+
+if __name__ == '__main__':
+    merge()
